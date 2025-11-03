@@ -794,7 +794,7 @@ namespace nlohmann
 				alloc.deallocate(object, 1);
 			};
 			std::unique_ptr<T, decltype(deleter)> object(alloc.allocate(1), deleter);
-			alloc.construct(object.get(), std::forward<Args>(args)...);
+			std::allocator_traits<decltype(alloc)>::construct(alloc, object.get(), std::forward<Args>(args)...);
 			assert(object.get() != nullptr);
 			return object.release();
 		}
@@ -2165,7 +2165,7 @@ namespace nlohmann
 			case value_t::object:
 				{
 					AllocatorType<object_t> alloc;
-					alloc.destroy(m_value.object);
+					std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.object);
 					alloc.deallocate(m_value.object, 1);
 					break;
 				}
@@ -2173,7 +2173,7 @@ namespace nlohmann
 			case value_t::array:
 				{
 					AllocatorType<array_t> alloc;
-					alloc.destroy(m_value.array);
+					std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.array);
 					alloc.deallocate(m_value.array, 1);
 					break;
 				}
@@ -2181,7 +2181,7 @@ namespace nlohmann
 			case value_t::string:
 				{
 					AllocatorType<string_t> alloc;
-					alloc.destroy(m_value.string);
+					std::allocator_traits<decltype(alloc)>::destroy(alloc, m_value.string);
 					alloc.deallocate(m_value.string, 1);
 					break;
 				}
